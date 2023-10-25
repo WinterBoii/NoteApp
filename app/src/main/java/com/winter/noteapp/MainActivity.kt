@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -58,10 +59,9 @@ fun NoteAppOverview() {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Navigate to the note creation screen */ }
-            ) {
-                Text("+")
-            }
+                onClick = { /* Navigate to the note creation screen */ },
+                content = { Text(text = "+") }
+            )
         }
     ) { padding ->
         Column(
@@ -120,13 +120,16 @@ fun NoteCreateScreen(note: Note? = null) {
                         if (note == null) "Create New Note"
                         else "Edit Note"
                     )
-                }
+                },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
             )},
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /* Save the note */ },
-
-            ) {}
+                content = { Text(text = "Save") }
+            )
         }
     ) { padding ->
         Column(
@@ -136,15 +139,19 @@ fun NoteCreateScreen(note: Note? = null) {
         ) {
             TextField(
                 value = titleTextState.value,
-                onValueChange = { titleTextState.value = it }, 
+                onValueChange = { titleTextState.value = it },
                 label = { Text("Title") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = 13.dp)
             )
             TextField(
                 value = titledescriptionState.value,
                 onValueChange = { titledescriptionState.value = it },
                 label = { Text(text = "Desc") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = 13.dp)
             )
         }
     }
@@ -154,4 +161,10 @@ fun NoteCreateScreen(note: Note? = null) {
 @Composable
 fun NotesOverviewScreenPreview() {
     NoteAppOverview()
+}
+
+@Preview
+@Composable
+fun NotesCreateScreenPreview() {
+    NoteCreateScreen()
 }

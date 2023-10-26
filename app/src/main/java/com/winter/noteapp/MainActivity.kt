@@ -1,6 +1,5 @@
 package com.winter.noteapp
 
-import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,17 +8,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,16 +26,12 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -50,13 +45,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-// Global variable to store the notes
-val notes = mutableStateListOf<Note>()
-
-class Note(val title: String, val description: String)
 
 @Composable
-fun NoteApp(modifier: Modifier = Modifier) {
+fun NoteApp() {
     val navController = rememberNavController()
 
     NavHost(
@@ -67,7 +58,7 @@ fun NoteApp(modifier: Modifier = Modifier) {
             NoteAppOverview(navController)
         }
         composable("create") {
-            NoteScreen(navController)
+            NoteEditScreen(navController)
         }
     }
 }
@@ -96,7 +87,7 @@ fun NoteAppOverview(
                 onClick = {
                     navController.navigate("create")
                 },
-                content = { Icon(Icons.Filled.Add, "") }
+                content = { Icon(Icons.Filled.Add, " ") }
             )
         }
     ) { padding ->
@@ -107,15 +98,20 @@ fun NoteAppOverview(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (notes.isEmpty()) {
-                Text(text = "No notes yet!")
+            if (listOf(notesList).isEmpty()) {
+                Text("No notes yet!")
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(notes) {note ->
-                        NoteItem(note)
-                    }
+                    items(
+                        items = notesList.getAllNotes(),
+                        key = { note -> note.id },
+                        itemContent = { note ->
+
+                            NoteItem(note = note)
+                        }
+                    )
                 }
             }
 
@@ -124,8 +120,10 @@ fun NoteAppOverview(
 }
 
 @Composable
-fun NoteItem(note: Note) {
-    ElevatedCard(
+fun NoteItem(
+    note: Note,
+) {
+    Card(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
@@ -147,12 +145,14 @@ fun NoteItem(note: Note) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteScreen(
+fun NoteEditScreen(
     navController: NavController,
-    note: Note? = null
+    noteId: Int? = null
 ) {
+    val note = noteId?.let { notesList.getNoteById(it) }
+
     val titleTextState = remember { mutableStateOf(note?.title ?: "") }
-    val titledescriptionState = remember { mutableStateOf(note?.title ?: "") }
+    val descriptionTextState = remember { mutableStateOf(note?.title ?: "") }
 
     Scaffold(
         topBar = {
@@ -165,7 +165,14 @@ fun NoteScreen(
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
+                ),
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
+                        Icon(Icons.Filled.ArrowBack, "Back arrow")
+                    }
+                }
             )
         },
 
@@ -185,8 +192,8 @@ fun NoteScreen(
                     .padding(all = 13.dp)
             )
             TextField(
-                value = titledescriptionState.value,
-                onValueChange = { titledescriptionState.value = it },
+                value = descriptionTextState.value,
+                onValueChange = { descriptionTextState.value = it },
                 label = { Text("Desc") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -196,11 +203,48 @@ fun NoteScreen(
                 modifier = Modifier
                     .padding(all = 13.dp)
                     .align(CenterHorizontally),
-                onClick = { /*TODO*/ }
+                onClick = { 
+                    notesList.addNote(
+                        title = titleTextState.value,
+                        description = descriptionTextState.value
+                    )
+                    navController.popBackStack()
+                }
             ) {
                 Text("Create")
             }
         }
+    }
+}
+
+// Global variable to store the notes
+val notesList = NoteRepository().apply {
+    addNote("Shukri", "is Beautiful.")
+    addNote("Shukri", "is Amaaaaaazing")
+}
+
+data class Note(val id: Int, val title: String, val description: String)
+
+class NoteRepository  {
+    private val notes = mutableListOf<Note>()
+
+    fun getAllNotes() = notes
+
+    fun getNoteById(id: Int) =
+        notes.find {
+            it.id == id
+        }
+    fun addNote(title: String, description: String) {
+        val id = when {
+            notes.isEmpty() -> 1
+            else -> notes.last().id + 1
+        }
+        notes.add(Note(
+            id,
+            title,
+            description
+        ))
+        //return id
     }
 }
 

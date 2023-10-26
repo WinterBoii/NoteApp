@@ -1,5 +1,6 @@
 package com.winter.noteapp
 
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,11 +9,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,8 +30,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,17 +57,18 @@ fun NoteAppOverview() {
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Note App")
+                    Text("Notes")
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /* Navigate to the note creation screen */ },
-                content = { Text(text = "+") }
+                content = { Icon(Icons.Filled.Add, "") }
             )
         }
     ) { padding ->
@@ -71,7 +79,7 @@ fun NoteAppOverview() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (notes.isEmpty()) {
+            /*if (notes.isEmpty()) {
                 Text(text = "No notes yet!")
             } else {
                 LazyColumn(
@@ -81,15 +89,25 @@ fun NoteAppOverview() {
                         NoteItem(note)
                     }
                 }
-            }
+            }*/
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                content = {
+                    items(3) {i ->
+                        NoteItem(note = Note("Title", "Description"))
+                    }
+                }
+            )
         }
     }
 }
 
 @Composable
 fun NoteItem(note: Note) {
-    Card(
-        modifier = Modifier.padding(16.dp)
+    ElevatedCard(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -124,13 +142,15 @@ fun NoteCreateScreen(note: Note? = null) {
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
-            )},
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /* Save the note */ },
-                content = { Text(text = "Save") }
+                content = { Icon(Icons.Filled.Add, "") }
             )
-        }
+        },
+
     ) { padding ->
         Column(
             modifier = Modifier
@@ -148,7 +168,7 @@ fun NoteCreateScreen(note: Note? = null) {
             TextField(
                 value = titledescriptionState.value,
                 onValueChange = { titledescriptionState.value = it },
-                label = { Text(text = "Desc") },
+                label = { Text("Desc") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 13.dp)
@@ -157,13 +177,13 @@ fun NoteCreateScreen(note: Note? = null) {
     }
 }
 
-@Preview
+//@Preview
 @Composable
 fun NotesOverviewScreenPreview() {
     NoteAppOverview()
 }
 
-@Preview
+//@Preview
 @Composable
 fun NotesCreateScreenPreview() {
     NoteCreateScreen()

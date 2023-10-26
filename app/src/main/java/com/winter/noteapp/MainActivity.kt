@@ -3,6 +3,7 @@ package com.winter.noteapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -60,6 +61,10 @@ fun NoteApp() {
         composable("create") {
             NoteEditScreen(navController)
         }
+        composable("edit/{id}") {
+            val id = it.arguments!!.getString("id")!!.toInt()
+            NoteEditScreen(navController, noteId = id)
+        }
     }
 }
 
@@ -102,14 +107,16 @@ fun NoteAppOverview(
                 Text("No notes yet!")
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
                 ) {
                     items(
                         items = notesList.getAllNotes(),
                         key = { note -> note.id },
                         itemContent = { note ->
 
-                            NoteItem(note = note)
+                            NoteItem(note = note, navController)
                         }
                     )
                 }
@@ -122,14 +129,19 @@ fun NoteAppOverview(
 @Composable
 fun NoteItem(
     note: Note,
+    navController: NavController?,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
-            .padding(16.dp)
+        modifier
+            .padding(8.dp)
             .fillMaxWidth()
+            .clickable {
+                navController?.navigate("edit/${note.id}")
+            }
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier.padding(16.dp)
         ) {
             Text(
                 text = note.title,
@@ -147,12 +159,13 @@ fun NoteItem(
 @Composable
 fun NoteEditScreen(
     navController: NavController,
-    noteId: Int? = null
+    noteId: Int? = null,
+    modifier: Modifier = Modifier
 ) {
     val note = noteId?.let { notesList.getNoteById(it) }
 
     val titleTextState = remember { mutableStateOf(note?.title ?: "") }
-    val descriptionTextState = remember { mutableStateOf(note?.title ?: "") }
+    val descriptionTextState = remember { mutableStateOf(note?.description ?: "") }
 
     Scaffold(
         topBar = {
@@ -178,7 +191,7 @@ fun NoteEditScreen(
 
     ) { padding ->
         Column(
-            modifier = Modifier
+            modifier
                 .fillMaxSize()
                 .padding(padding),
             //horizontalAlignment = Alignment.CenterHorizontally
@@ -204,36 +217,42 @@ fun NoteEditScreen(
                     .padding(all = 13.dp)
                     .align(CenterHorizontally),
                 onClick = { 
-                    notesList.addNote(
-                        title = titleTextState.value,
-                        description = descriptionTextState.value
-                    )
+                    if (note == null) {
+                        notesList.addNote(
+                            title = titleTextState.value,
+                            description = descriptionTextState.value
+                        )
+                    } else {
+                        notesList.updateNote(
+                            noteId,
+                            titleTextState.value,
+                            descriptionTextState.value
+                        )
+                    }
                     navController.popBackStack()
+                },
+                enabled = titleTextState.value.isNotBlank(),
+                content = {
+                    Text("Create")
                 }
-            ) {
-                Text("Create")
-            }
+            )
         }
     }
 }
 
 // Global variable to store the notes
 val notesList = NoteRepository().apply {
-    addNote("Shukri", "is Beautiful.")
-    addNote("Shukri", "is Amaaaaaazing")
+    addNote("Sushi", "is Beyooond.")
+    addNote("Sushi", "is Amaaaaaazing")
 }
 
-data class Note(val id: Int, val title: String, val description: String)
+data class Note(val id: Int, var title: String, var description: String)
 
 class NoteRepository  {
     private val notes = mutableListOf<Note>()
 
     fun getAllNotes() = notes
 
-    fun getNoteById(id: Int) =
-        notes.find {
-            it.id == id
-        }
     fun addNote(title: String, description: String) {
         val id = when {
             notes.isEmpty() -> 1
@@ -245,6 +264,21 @@ class NoteRepository  {
             description
         ))
         //return id
+    }
+
+    fun updateNote(id: Int, newtitle: String, newDescription: String) {
+        getNoteById(id)?.run {
+            title = newtitle
+            description = newDescription
+        }
+    }
+    fun getNoteById(id: Int) =
+        notes.find {
+            it.id == id
+        }
+
+    fun deleteNoteById(id: Int) {
+        notes.removeIf{ it.id == id }
     }
 }
 

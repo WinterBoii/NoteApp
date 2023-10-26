@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -29,17 +31,22 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            NoteAppOverview()
+            NoteApp()
         }
     }
 }
@@ -48,9 +55,28 @@ val notes = mutableStateListOf<Note>()
 
 class Note(val title: String, val description: String)
 
+@Composable
+fun NoteApp(modifier: Modifier = Modifier) {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = "start"
+    ) {
+        composable("start") {
+            NoteAppOverview(navController)
+        }
+        composable("create") {
+            NoteScreen(navController)
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteAppOverview() {
+fun NoteAppOverview(
+    navController: NavController
+) {
     Scaffold(
         modifier = Modifier,
         containerColor = MaterialTheme.colorScheme.background,
@@ -67,7 +93,9 @@ fun NoteAppOverview() {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Navigate to the note creation screen */ },
+                onClick = {
+                    navController.navigate("create")
+                },
                 content = { Icon(Icons.Filled.Add, "") }
             )
         }
@@ -79,7 +107,7 @@ fun NoteAppOverview() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            /*if (notes.isEmpty()) {
+            if (notes.isEmpty()) {
                 Text(text = "No notes yet!")
             } else {
                 LazyColumn(
@@ -89,15 +117,8 @@ fun NoteAppOverview() {
                         NoteItem(note)
                     }
                 }
-            }*/
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                content = {
-                    items(3) {i ->
-                        NoteItem(note = Note("Title", "Description"))
-                    }
-                }
-            )
+            }
+
         }
     }
 }
@@ -126,7 +147,10 @@ fun NoteItem(note: Note) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteCreateScreen(note: Note? = null) {
+fun NoteScreen(
+    navController: NavController,
+    note: Note? = null
+) {
     val titleTextState = remember { mutableStateOf(note?.title ?: "") }
     val titledescriptionState = remember { mutableStateOf(note?.title ?: "") }
 
@@ -135,7 +159,7 @@ fun NoteCreateScreen(note: Note? = null) {
             TopAppBar(
                 title = {
                     Text(
-                        if (note == null) "Create New Note"
+                        if (note == null) "New Note"
                         else "Edit Note"
                     )
                 },
@@ -144,18 +168,13 @@ fun NoteCreateScreen(note: Note? = null) {
                 )
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /* Save the note */ },
-                content = { Icon(Icons.Filled.Add, "") }
-            )
-        },
 
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding),
+            //horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
                 value = titleTextState.value,
@@ -173,18 +192,15 @@ fun NoteCreateScreen(note: Note? = null) {
                     .fillMaxWidth()
                     .padding(all = 13.dp)
             )
+            Button(
+                modifier = Modifier
+                    .padding(all = 13.dp)
+                    .align(CenterHorizontally),
+                onClick = { /*TODO*/ }
+            ) {
+                Text("Create")
+            }
         }
     }
 }
 
-//@Preview
-@Composable
-fun NotesOverviewScreenPreview() {
-    NoteAppOverview()
-}
-
-//@Preview
-@Composable
-fun NotesCreateScreenPreview() {
-    NoteCreateScreen()
-}

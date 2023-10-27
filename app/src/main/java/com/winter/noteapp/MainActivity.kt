@@ -27,8 +27,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -129,7 +131,7 @@ fun NoteAppOverview(
 @Composable
 fun NoteItem(
     note: Note,
-    navController: NavController?,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -137,7 +139,7 @@ fun NoteItem(
             .padding(8.dp)
             .fillMaxWidth()
             .clickable {
-                navController?.navigate("edit/${note.id}")
+                navController.navigate("edit/${note.id}")
             }
     ) {
         Column(
@@ -164,8 +166,8 @@ fun NoteEditScreen(
 ) {
     val note = noteId?.let { notesList.getNoteById(it) }
 
-    val titleTextState = remember { mutableStateOf(note?.title ?: "") }
-    val descriptionTextState = remember { mutableStateOf(note?.description ?: "") }
+    var titleTextState by remember { mutableStateOf(note?.title ?: "") }
+    var descriptionTextState by remember { mutableStateOf(note?.description ?: "") }
 
     Scaffold(
         topBar = {
@@ -197,17 +199,17 @@ fun NoteEditScreen(
             //horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
-                value = titleTextState.value,
-                onValueChange = { titleTextState.value = it },
+                value = titleTextState,
+                onValueChange = { titleTextState = it },
                 label = { Text("Title") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 13.dp)
             )
             TextField(
-                value = descriptionTextState.value,
-                onValueChange = { descriptionTextState.value = it },
-                label = { Text("Desc") },
+                value = descriptionTextState,
+                onValueChange = { descriptionTextState = it },
+                label = { Text("Description") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 13.dp)
@@ -219,21 +221,23 @@ fun NoteEditScreen(
                 onClick = { 
                     if (note == null) {
                         notesList.addNote(
-                            title = titleTextState.value,
-                            description = descriptionTextState.value
+                            title = titleTextState,
+                            description = descriptionTextState
                         )
                     } else {
                         notesList.updateNote(
                             noteId,
-                            titleTextState.value,
-                            descriptionTextState.value
+                            titleTextState,
+                            descriptionTextState
                         )
                     }
                     navController.popBackStack()
                 },
-                enabled = titleTextState.value.isNotBlank(),
+                enabled = titleTextState.isNotBlank(),
                 content = {
-                    Text("Create")
+                    Text(
+                        if (note == null) "Create"
+                        else "Edit")
                 }
             )
         }
@@ -242,8 +246,8 @@ fun NoteEditScreen(
 
 // Global variable to store the notes
 val notesList = NoteRepository().apply {
-    addNote("Sushi", "is Beyooond.")
-    addNote("Sushi", "is Amaaaaaazing")
+    addNote("Sushi", "is Beyond.")
+    addNote("Sushi", "is Amazingness")
 }
 
 data class Note(val id: Int, var title: String, var description: String)

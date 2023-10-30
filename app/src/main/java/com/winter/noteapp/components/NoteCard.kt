@@ -32,19 +32,20 @@ fun NoteItem(
             .fillMaxWidth()
             .clickable {
                 navController.navigate("edit/${note.id}")
+            },
+        content = {
+            Column(
+                modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = note.title,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Text(
+                    text = note.description,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
-    ) {
-        Column(
-            modifier.padding(16.dp)
-        ) {
-            Text(
-                text = note.title,
-                style = MaterialTheme.typography.headlineSmall
-            )
-            Text(
-                text = note.description,
-                style = MaterialTheme.typography.bodyMedium
-            )
         }
-    }
+    )
 }

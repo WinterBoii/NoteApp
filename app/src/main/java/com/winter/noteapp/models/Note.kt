@@ -1,13 +1,15 @@
 package com.winter.noteapp.models
 
+import androidx.compose.runtime.mutableStateListOf
+
 data class Note(val id: Int, var title: String, var description: String)
 
 class NoteRepository  {
-    private val notes = mutableListOf<Note>()
+    private val notes = mutableStateListOf<Note>()
 
     fun getAllNotes() = notes
 
-    fun addNote(title: String, description: String) {
+    fun addNote(title: String, description: String): Int {
         val id = when {
             notes.isEmpty() -> 1
             else -> notes.last().id + 1
@@ -17,7 +19,7 @@ class NoteRepository  {
             title,
             description
         ))
-        //return id
+        return id
     }
 
     fun updateNote(id: Int, newtitle: String, newDescription: String) {

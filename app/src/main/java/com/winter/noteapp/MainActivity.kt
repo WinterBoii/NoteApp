@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.winter.noteapp.models.AppRoutes
 import com.winter.noteapp.models.NoteRepository
 import com.winter.noteapp.screens.NoteAppOverview
 import com.winter.noteapp.screens.NoteEditScreen
@@ -58,15 +59,15 @@ fun NoteApp() {
 
     NavHost(
         navController = navController,
-        startDestination = "start"
+        startDestination = AppRoutes.Start.route
     ) {
-        composable("start") {
+        composable(AppRoutes.Create.route) {
             NoteAppOverview(navController)
         }
-        composable("create") {
+        composable(AppRoutes.Edit(id).route) {
             NoteEditScreen(navController)
         }
-        composable("edit/{id}") {
+        composable(AppRoutes.Edit(id).route) {
             val id = it.arguments!!.getString("id")!!.toInt()
             NoteEditScreen(navController, noteId = id)
         }

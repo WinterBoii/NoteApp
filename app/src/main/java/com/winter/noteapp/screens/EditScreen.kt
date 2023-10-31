@@ -32,7 +32,7 @@ import com.winter.noteapp.components.notesList
 fun NoteEditScreen(
     navController: NavController,
     noteId: Int? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val note = noteId?.let { notesList.getNoteById(it) }
 

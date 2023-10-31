@@ -9,7 +9,7 @@ class NoteRepository  {
 
     fun getAllNotes() = notes
 
-    fun addNote(title: String, description: String): Int {
+    fun addNote(title: String, description: String) {
         val id = when {
             notes.isEmpty() -> 1
             else -> notes.last().id + 1
@@ -19,7 +19,8 @@ class NoteRepository  {
             title,
             description
         ))
-        return id
+        //return id
+
     }
 
     fun updateNote(id: Int, newtitle: String, newDescription: String) {

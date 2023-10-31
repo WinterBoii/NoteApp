@@ -61,10 +61,10 @@ fun NoteApp() {
         navController = navController,
         startDestination = AppRoutes.Start.route
     ) {
-        composable(AppRoutes.Create.route) {
+        composable(AppRoutes.Start.route) {
             NoteAppOverview(navController)
         }
-        composable(AppRoutes.Edit(id).route) {
+        composable(AppRoutes.Create.route) {
             NoteEditScreen(navController)
         }
         composable(AppRoutes.Edit(id).route) {

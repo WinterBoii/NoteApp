@@ -19,8 +19,6 @@ class NoteRepository  {
             title,
             description
         ))
-        //return id
-
     }
 
     fun updateNote(id: Int, newtitle: String, newDescription: String) {

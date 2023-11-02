@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
@@ -51,6 +53,7 @@ fun NoteItem(
     modifier: Modifier = Modifier
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    var expand by remember { mutableStateOf(false) }
 
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
@@ -69,23 +72,42 @@ fun NoteItem(
                 .fillMaxWidth(),
         ) {
             Column(
-                modifier
+                modifier = modifier
                     .padding(16.dp)
-                    .windowInsetsEndWidth(insets = WindowInsets(right = 250.dp))
+                    .windowInsetsEndWidth(insets = WindowInsets(right = 250.dp)),
+
             ) {
-                Text(
-                    text = note.title,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-                Text(
-                    text = note.description,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Row(
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Text(
+                        text = note.title,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    IconButton(onClick = {
+                        expand = !expand },
+                        modifier = modifier
+                            .padding(top = 5.dp),
+                        ) {
+                        Icon(
+                            if (expand) Icons.Filled.KeyboardArrowDown
+                            else Icons.Filled.KeyboardArrowRight, "",
+                            modifier = Modifier
+                                .padding(6.dp)
+                        )
+                    }
+                }
+                if (expand)
+                    Text(
+                        text = note.description,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
             }
 
             Column(
                 modifier
                     .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceAround
             ) {
                 IconButton(
                     onClick = {

@@ -85,9 +85,11 @@ fun NoteEditScreen(
         ) {
             OutlinedTextField(
                 value = titleTextState,
-                onValueChange = { titleTextState = it },
+                onValueChange = {
+                    titleTextState = it
+                    isError = titleTextState.isBlank() || (titleTextState.length < 3)
+                },
                 label = { Text("Title") },
-                //isError = !(titleTextState.isNotBlank() && titleTextState.length > 2),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 13.dp),
@@ -95,13 +97,16 @@ fun NoteEditScreen(
                     containerColor = Color.White,
                     focusedBorderColor = MyColors.codeBackground,
                     focusedLabelColor = MyColors.codeBackground
-                )
+                ),
+                isError = isError
             )
             OutlinedTextField(
                 value = descriptionTextState,
-                onValueChange = { descriptionTextState = it },
+                onValueChange = {
+                    descriptionTextState = it
+                    isError = descriptionTextState.isBlank() || (descriptionTextState.length < 1)
+                },
                 label = { Text("Description") },
-                //isError = !(descriptionTextState.isNotBlank() && descriptionTextState.length > 5),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 13.dp),
@@ -109,7 +114,8 @@ fun NoteEditScreen(
                     containerColor = Color.White,
                     focusedBorderColor = MyColors.codeBackground,
                     focusedLabelColor = MyColors.codeBackground
-                )
+                ),
+                isError = isError
             )
             Button(
                 modifier = Modifier
@@ -130,7 +136,7 @@ fun NoteEditScreen(
                     }
                     navController.popBackStack()
                 },
-                enabled = titleTextState.isNotBlank(),
+                enabled = !isError,
                 content = {
                     Text(
                         if (note == null) "Create"

@@ -4,6 +4,6 @@ import com.winter.noteapp.models.NoteRepository
 
 // Global variable to store the notes
 val notesList = NoteRepository().apply {
-    addNote("Sushi", "is Del.")
-    addNote("Sushi", "is sweet")
+    addNote("Go Shopping", "But Vegs.")
+    addNote("Help Her", "She crazy")
 }

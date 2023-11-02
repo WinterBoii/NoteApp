@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.winter.noteapp.models.AppRoutes
 import com.winter.noteapp.models.Note
 import com.winter.noteapp.models.NoteRepository
 
@@ -86,7 +87,8 @@ fun NoteItem(
             ) {
                 IconButton(
                     onClick = {
-                        navController.navigate("edit/${note.id}")
+                        println(AppRoutes.Edit.route + "${note.id}")
+                        navController.navigate("${AppRoutes.Edit.route}/${note.id}")
                     },
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.inversePrimary,

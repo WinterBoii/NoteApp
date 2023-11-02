@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.winter.noteapp.components.NoteItem
 import com.winter.noteapp.components.notesList
+import com.winter.noteapp.models.AppRoutes
 import com.winter.noteapp.models.NoteRepository
 
 
@@ -53,7 +54,7 @@ fun NoteAppOverview(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate("create")
+                    navController.navigate(AppRoutes.Create.route)
                 },
                 containerColor = MaterialTheme.colorScheme.primary,
                 content = { Icon(Icons.Filled.Add, " ") }

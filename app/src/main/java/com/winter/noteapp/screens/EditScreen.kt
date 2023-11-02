@@ -38,6 +38,7 @@ fun NoteEditScreen(
 
     var titleTextState by remember { mutableStateOf(note?.title ?: "") }
     var descriptionTextState by remember { mutableStateOf(note?.description ?: "") }
+    var isError by remember { mutableStateOf(false)}
 
     Scaffold(
         topBar = {
@@ -72,6 +73,7 @@ fun NoteEditScreen(
                 value = titleTextState,
                 onValueChange = { titleTextState = it },
                 label = { Text("Title") },
+                //isError = !(titleTextState.isNotBlank() && titleTextState.length > 2),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 13.dp)
@@ -80,6 +82,7 @@ fun NoteEditScreen(
                 value = descriptionTextState,
                 onValueChange = { descriptionTextState = it },
                 label = { Text("Description") },
+                //isError = !(descriptionTextState.isNotBlank() && descriptionTextState.length > 5),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 13.dp)

@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import com.winter.noteapp.ui.theme.MyColors
 
 @Composable
 fun ConfirmDeleteDialog(
@@ -19,15 +20,15 @@ fun ConfirmDeleteDialog(
         text = { Text("Are you sure you want to delete this item?") },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text("Yes")
+                Text("Yes", color = MyColors.codeBackground)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("No")
+                Text("No", color = MyColors.codeBackground)
             }
         },
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = MyColors.beige,
         tonalElevation = 20.dp
     )
 }

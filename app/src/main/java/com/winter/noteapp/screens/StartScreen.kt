@@ -24,12 +24,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.winter.noteapp.components.NoteItem
 import com.winter.noteapp.components.notesList
 import com.winter.noteapp.models.AppRoutes
 import com.winter.noteapp.models.NoteRepository
+import com.winter.noteapp.ui.theme.MyColors
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,15 +43,21 @@ fun NoteAppOverview(
 ) {
     Scaffold(
         modifier = Modifier,
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MyColors.beige,
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Notes")
+                    Text(
+                        "Notes",
+                        style = TextStyle(
+                            color = MyColors.codeBackground,
+                            fontSize = 27.sp
+                        )
+                    )
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MyColors.beige,
+                    titleContentColor = MyColors.textDarkGray
                 )
             )
         },
@@ -56,7 +66,7 @@ fun NoteAppOverview(
                 onClick = {
                     navController.navigate(AppRoutes.Create.route)
                 },
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = Color.White,
                 content = { Icon(Icons.Filled.Add, " ") }
             )
         }

@@ -7,13 +7,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -23,9 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.winter.noteapp.components.notesList
+import com.winter.noteapp.ui.theme.MyColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,16 +50,21 @@ fun NoteEditScreen(
     var isError by remember { mutableStateOf(false)}
 
     Scaffold(
+        containerColor = MyColors.beige,
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         if (note == null) "New Note"
-                        else "Edit Note"
+                        else "Edit Note",
+                        style = TextStyle(
+                            color = MyColors.codeBackground,
+                            fontSize = 27.sp
+                        )
                     )
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                    containerColor = MyColors.beige
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
@@ -69,23 +83,33 @@ fun NoteEditScreen(
                 .padding(padding),
             //horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TextField(
+            OutlinedTextField(
                 value = titleTextState,
                 onValueChange = { titleTextState = it },
                 label = { Text("Title") },
                 //isError = !(titleTextState.isNotBlank() && titleTextState.length > 2),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = 13.dp)
+                    .padding(all = 13.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White,
+                    focusedBorderColor = MyColors.codeBackground,
+                    focusedLabelColor = MyColors.codeBackground
+                )
             )
-            TextField(
+            OutlinedTextField(
                 value = descriptionTextState,
                 onValueChange = { descriptionTextState = it },
                 label = { Text("Description") },
                 //isError = !(descriptionTextState.isNotBlank() && descriptionTextState.length > 5),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = 13.dp)
+                    .padding(all = 13.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White,
+                    focusedBorderColor = MyColors.codeBackground,
+                    focusedLabelColor = MyColors.codeBackground
+                )
             )
             Button(
                 modifier = Modifier
@@ -111,7 +135,12 @@ fun NoteEditScreen(
                     Text(
                         if (note == null) "Create"
                         else "Edit")
-                }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MyColors.codeBackground,
+                    disabledContainerColor = MyColors.textGray,
+                    disabledContentColor = MyColors.beige
+                )
             )
         }
     }

@@ -35,12 +35,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.winter.noteapp.models.AppRoutes
 import com.winter.noteapp.models.Note
 import com.winter.noteapp.models.NoteRepository
+import com.winter.noteapp.ui.theme.MyColors
 
 @Composable
 fun NoteItem(
@@ -52,10 +54,10 @@ fun NoteItem(
 
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp,
+            defaultElevation = 4.dp,
         ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor = Color.White
         ),
         modifier = modifier
             .padding(8.dp)
@@ -91,8 +93,8 @@ fun NoteItem(
                         navController.navigate("${AppRoutes.Edit.route}/${note.id}")
                     },
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.inversePrimary,
-                        contentColor = MaterialTheme.colorScheme.primary
+                        containerColor = MyColors.codeBackground,
+                        contentColor = MyColors.beige
                     ),
                     modifier = modifier
                         .clip(CircleShape)
@@ -104,8 +106,8 @@ fun NoteItem(
                         showDialog = true
                     },
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.inversePrimary,
-                        contentColor = MaterialTheme.colorScheme.primary
+                        containerColor = MyColors.codeBackground,
+                        contentColor = MyColors.beige
                     ),
                     modifier = modifier
                         .clip(CircleShape)

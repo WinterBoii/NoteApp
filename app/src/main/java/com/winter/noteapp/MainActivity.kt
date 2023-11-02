@@ -67,7 +67,7 @@ fun NoteApp() {
         composable(AppRoutes.Create.route) {
             NoteEditScreen(navController)
         }
-        composable(("${AppRoutes.Edit.route}/${id}")) { backStackEntry ->
+        composable(AppRoutes.Edit.route + "/{id}") { backStackEntry ->
             val id = backStackEntry.arguments!!.getString("id")!!.toInt()
             NoteEditScreen(navController, id)
         }
